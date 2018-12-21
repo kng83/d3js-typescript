@@ -1,9 +1,9 @@
- import {interval} from 'rxjs';
+import { interval } from 'rxjs';
+import { select } from 'd3-selection';
+interval(1000).subscribe(value => console.log(value));
 
- interval(1000).subscribe(value => console.log(value));
 
 
-import {select} from 'd3-selection';
+ let me = select('body');
+console.log(me);
 
-// let me = select('body');
-console.log('mes');
