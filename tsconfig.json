@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
-        "module": "system",
-        "removeComments": true,
-        "target": "es6",
+        "module": "commonjs",
+        "esModuleInterop": true,
+        "target": "es5",
         "preserveConstEnums": true,
         "moduleResolution": "node",
         "outDir": "./dist",
