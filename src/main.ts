@@ -1,11 +1,5 @@
-import { interval } from 'rxjs';
-import { select } from 'd3-selection';
 
+import './01/boolean_chart';
 
-interval(1000).subscribe(value => console.log(value));
-
-
-
- let me = select('body');
-console.log(me);
+// Make
 

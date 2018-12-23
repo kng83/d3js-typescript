@@ -9,8 +9,15 @@ app.get('/', function (req, res) {
     res.sendFile(p);
 });
 
+// send main js file
 app.get('/dist/bundle.js', function (req, res) {
     const p = path.join(__dirname, './dist/bundle.js')
+    res.sendFile(p);
+});
+
+//send main css file
+app.get('/css/style.css', function (req, res) {
+    const p = path.join(__dirname, './server/css/style.css')
     res.sendFile(p);
 });
 

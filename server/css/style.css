@@ -1,0 +1,22 @@
+path.clip-line{
+    fill:none;
+    stroke:darkblue;
+    stroke-opacity:0.7;
+    stroke-width: 2px;
+}
+
+path.domain {
+    stroke: darkgray;
+    stroke-opacity: 0.7;
+}
+
+g.tick > text {
+    fill: #969696;
+}
+
+
+g.tick >line{
+    stroke-opacity: 1;
+    stroke:darkgray;
+    stroke-width: 1px;
+}
