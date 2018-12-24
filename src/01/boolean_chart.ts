@@ -23,7 +23,7 @@ let svg = select("svg"),
     g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
 
 let x = scaleLinear()
-    .domain([1, n - 2])
+    .domain([1, n-2])
     .range([0, width]);
 
 
@@ -67,28 +67,36 @@ clip
     .attr("id", "cline")
     .attr("class", "clip-line")
 
-let xAxis = clip
+let xAxis = g
     .append("g")
     .attr("class", "axis axis--x")
-    .attr("transform", `translate(${0},${y(0)})`)
+    .attr("transform", `translate(${x(0)},${y(0)})`)
     .call(axisBottom(xAxisScale));
 
 
 let counter = 10
+let oldvalue = 0;
 function dataPusher(time, value) {
 
     interrupt(select(".clip-line").node())
     // //*** X axis movement */
-    // counter++;
-    // xAxisDomain.push((counter).toString());
-    // xAxisScale = scaleBand().domain(xAxisDomain).range([0, width]);
-    // xAxis
-    //     .attr("transform", `translate(${x(0)},${y(0)})`)
-    //     .transition()
-    //     .duration(time)
-    //     .ease(easeLinear)
-    //     .call(axisBottom(xAxisScale));
-    // xAxisDomain.shift();
+    if(value !=oldvalue){
+        counter++;
+        xAxisDomain.push((counter).toString());
+        oldvalue = value;
+    }
+    
+    xAxisScale = scaleBand().domain(xAxisDomain).range([0, width]);
+    xAxis
+        .attr("transform", `translate(${x(0)},${y(0)})`)
+        .transition()
+        .duration(500)
+        .ease(easeLinear)
+        .call(axisBottom(xAxisScale));
+    if(xAxisDomain.length >2){
+        xAxisDomain.shift();
+    }
+   
 
     data.push(value);
     selectAll(".clip-line")
@@ -123,6 +131,7 @@ interval(500).pipe(
     }),
     distinctUntilChanged()
 ).subscribe(value => {
+
     dataPusher(500, value);
 })
 
