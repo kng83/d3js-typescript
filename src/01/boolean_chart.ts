@@ -1,6 +1,6 @@
 import { scaleLinear, scaleBand } from 'd3-scale';
 import { range } from 'd3-array'
-import { select } from 'd3-selection';
+import { select, selectAll, } from 'd3-selection';
 import { curveStep, line } from 'd3-shape';
 import { axisBottom, axisLeft } from 'd3-axis'
 import { easeLinear } from 'd3-ease';
@@ -12,7 +12,7 @@ import { map, distinctUntilChanged } from 'rxjs/operators';
 
 
 
-let n = 30,
+let n = 20,
     random = () => Math.round(Math.random()),
     data = range(n).map(v => 0);
 
@@ -24,6 +24,12 @@ let svg = select("svg"),
 
 let x = scaleLinear()
     .domain([1, n - 2])
+    .range([0, width]);
+
+
+let xAxisDomain = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+let xAxisScale = scaleBand()
+    .domain(xAxisDomain)
     .range([0, width]);
 
 let y = scaleLinear()
@@ -42,29 +48,50 @@ g.append("defs")
     .attr("width", width)
     .attr("height", height);
 
-g.append("g")
-    .attr("class", "axis axis--x")
-    .attr("transform", `translate(${0},${y(0)})`)
-    .call(axisBottom(x).ticks(3));
+// let xAxis = g.append("g")
+//     .attr("class", "axis axis--x")
+//     .attr("transform", `translate(${0},${y(0)})`)
+//     .call(axisBottom(xAxisScale));
 
 g.append("g")
     .attr("class", "axis axis--y")
     .call(axisLeft(y).ticks(1));
 
-g.append("g")
+let clip = g.append("g")
     .attr("clip-path", "url(#clip)")
+
+
+clip
     .append("path")
     .datum(data)
     .attr("id", "cline")
     .attr("class", "clip-line")
 
+let xAxis = clip
+    .append("g")
+    .attr("class", "axis axis--x")
+    .attr("transform", `translate(${0},${y(0)})`)
+    .call(axisBottom(xAxisScale));
 
+
+let counter = 10
 function dataPusher(time, value) {
 
     interrupt(select(".clip-line").node())
+    // //*** X axis movement */
+    // counter++;
+    // xAxisDomain.push((counter).toString());
+    // xAxisScale = scaleBand().domain(xAxisDomain).range([0, width]);
+    // xAxis
+    //     .attr("transform", `translate(${x(0)},${y(0)})`)
+    //     .transition()
+    //     .duration(time)
+    //     .ease(easeLinear)
+    //     .call(axisBottom(xAxisScale));
+    // xAxisDomain.shift();
 
     data.push(value);
-    select(".clip-line")
+    selectAll(".clip-line")
         .transition()
         .duration(time)
         .ease(easeLinear)
@@ -74,14 +101,19 @@ function dataPusher(time, value) {
 
 
 function tick() {
-    let selection = select(".clip-line")
+
+    //*** Clip line movement */
+    const clipLine = select(".clip-line")
         .attr("d", superLine)
         .attr("transform", null)
 
-    active(selection.node())
+    active(clipLine.node())
         .attr("transform", `translate(${x(0)},${0})`)
         .transition()
         .on("start", () => dataPusher(500, data[data.length - 1]))
+
+
+
 }
 
 interval(500).pipe(
