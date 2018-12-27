@@ -1,6 +1,6 @@
 import { Chart } from 'chart.js';
 import { interval, pipe } from 'rxjs';
-import { map, distinctUntilChanged } from 'rxjs/operators';
+import { map, distinctUntilChanged, take } from 'rxjs/operators';
 
 let html = document.getElementById('myChart')
 let ctx = (<any>html).getContext('2d')
@@ -8,26 +8,20 @@ let ctx = (<any>html).getContext('2d')
 let newDate = new Date() as any as number;
 
 
-let chartData = [];
 
-for (let i = 0; i < 20; i++) {
-    chartData[i] = { x: (newDate - 1000 * i), y: 0 }
-}
-let takeLast = (array: any[], counter) => {
-    return array
-        .filter((el, index) => array.length - counter - index <= 0);
-
+let fillArray = (numberOfElements: number, pattern: Function) => {
+    let arr = []
+    for (let i = 0; i < numberOfElements; i++) {
+        arr[i] = pattern(i)
+    }
+    return arr.reverse();
 }
 
-let copyLast = (target, source, counter) => {
-    source.forEach((element, index) => {
-        if (source.length - counter - index <=0)
-        target[counter + index - source.length] = source[index]
-    });
-}
-let vData = takeLast(chartData, 20);
+let chartData = fillArray(10, (index) => { return { x: (newDate - 1000 * index), y: 0 } });
 
-//let vData = [...chartData];
+
+//let vData = takeLast(chartData, 10);
+let vData = chartData.slice();
 
 
 let chart = new Chart(ctx, {
@@ -89,10 +83,6 @@ let chart = new Chart(ctx, {
     }
 });
 
-//chartData = vData;
-
-console.log(takeLast(chartData, 10));
-
 interval(1000).pipe(
     map((value) => {
         let random = Math.round(Math.random() + 0.0)
@@ -101,9 +91,15 @@ interval(1000).pipe(
     // distinctUntilChanged()
 ).subscribe(value => {
     let newDate = +new Date();
-
     chartData.push({ x: newDate, y: value });
-    copyLast(vData,chartData,20);
-    console.log(vData);
+    // vData.push(chartData[chartData.length -1])
+    // vData.shift();
+
+    chart.data.datasets.forEach(dataset=> {
+        dataset.data.forEach((d,index)=>{
+            console.log(d);
+            d[index] = chartData[chartData.length - 1 - d.length   + index]
+    });
+})
     chart.update();
 })
