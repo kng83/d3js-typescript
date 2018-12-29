@@ -214,4 +214,4 @@ function onCanvasClick(evt){
               
            },500)
         }
-}
+}//s
