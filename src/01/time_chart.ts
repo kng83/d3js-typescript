@@ -52,6 +52,15 @@ let chart = new Chart(ctx, {
         //    mode:'x',
             position:'average',
         },
+      //  events:['click'],
+        onHover:(evt) =>{
+            var item:any = chart.getElementAtEvent(evt);
+            if(item.length> 0){
+                console.log(chart.data.datasets[0].data[item[0]._index])
+            }
+            
+        },
+        onClick:onCanvasClick,
 
         title: {
             display: true,
@@ -170,30 +179,39 @@ document.getElementById('pause').addEventListener("click", () => {
 // }
 
 //Find specific point value
-document.getElementById('myChart').addEventListener('click', (evt)=>{
+// document.getElementById('myChart').addEventListener('click', (evt)=>{
+//         var activePoints = chart.getElementAtEvent(evt);
+//         if(activePoints[0]){
+//             const index = activePoints['0']._index;
+//            activePoints['0']._model.pointStyle = 'rect';
+//            // activePoints['0']._model.pointHoverBackgroundColor='rgb(120,120,10)'
+//           let setBackground =  setInterval(()=>{
+//            //   console.log(activePoints['0']._view.borderColor);
+//             if(activePoints['0']._model.borderColor =  'rgb(244,20,20)' ){
+//                 clearInterval(setBackground);
+//             }
+//                 activePoints['0']._model.backgroundColor = 'rgb(2,20,20)';
+//                 activePoints['0']._model.borderColor = 'rgb(244,20,20)';
+               
+//            },500)
+
+//         }
+//     });
+
+function onCanvasClick(evt){
         var activePoints = chart.getElementAtEvent(evt);
         if(activePoints[0]){
             const index = activePoints['0']._index;
            activePoints['0']._model.pointStyle = 'rect';
            // activePoints['0']._model.pointHoverBackgroundColor='rgb(120,120,10)'
           let setBackground =  setInterval(()=>{
-              console.log(activePoints['0']._view.borderColor);
+           //   console.log(activePoints['0']._view.borderColor);
             if(activePoints['0']._model.borderColor =  'rgb(244,20,20)' ){
                 clearInterval(setBackground);
             }
                 activePoints['0']._model.backgroundColor = 'rgb(2,20,20)';
                 activePoints['0']._model.borderColor = 'rgb(244,20,20)';
-               
+              
            },500)
-
-document.getElementById('myChart').addEventListener('mousemove, mouseenter',(evt)=>{
-    var activePoints = chart.getElementAtEvent(evt);
-    console.log(activePoints);
-})
-          
-        console.log(activePoints['0'])
-     //   console.log(new Date(vData[index].x));
         }
-        
-
-})
+}
