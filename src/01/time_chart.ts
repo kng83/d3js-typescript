@@ -3,7 +3,7 @@ import { interval, pipe } from 'rxjs';
 import { map, distinctUntilChanged, take } from 'rxjs/operators';
 
 let html = document.getElementById('myChart')
-console.log(html);
+//console.log(html);
 let ctx = (<any>html).getContext('2d')
 
 let newDate = Date.now();
@@ -35,11 +35,11 @@ let chart = new Chart(ctx, {
             borderColor: 'rgba(66, 134, 244,0.7)',
             steppedLine: 'before',
             data: vData,
-            fill: true,
-            pointStyle:"rect",
-            pointBackgroundColor:"rgb(200,100,200)",
-            pointBorderColor:"rgb(200,100,200)",
-            pointHoverBackgroundColor:"rgb(200,200,100)",
+       //     fill: true,
+            pointStyle:"circle",
+        //    pointBackgroundColor:"rgb(200,100,200)",
+       //     pointBorderColor:"rgb(200,100,200)",
+       //     pointHoverBackgroundColor:"rgb(200,200,100)",
           //  showLine:false
         }]
     },
@@ -52,6 +52,7 @@ let chart = new Chart(ctx, {
         //    mode:'x',
             position:'average',
         },
+
         title: {
             display: true,
             text: 'Chart.js Time Point Data'
@@ -119,7 +120,7 @@ interval(1000).pipe(
 
     }
     else {
-        console.log(counter, pushObj);
+     //   console.log(counter, pushObj);
         counter++;
     }
 
@@ -138,7 +139,7 @@ function updateChart(counter) {
         if (counter <= 0) {
             recursionRunning = false;
         } else {
-            console.log(counter);
+          //  console.log(counter);
             return recursion(counter)
         }
         if (!recursionRunning) return true;
@@ -153,22 +154,46 @@ document.getElementById('zoomOut').addEventListener("click", () => {
     chart.update();
 })
 
-let holdInterval;
 document.getElementById('zoomIn').addEventListener("click", (event) => {
-    function makeIt(){
-        console.log('zoomIn','event');
-        console.log(vData.length, chartData.length);
         vData.shift();
         chart.update();
-    }
-    holdInterval =setInterval(()=>{
-        makeIt();
-    },500)
 })
-document.body.addEventListener("mousedown", (event) => {
-    clearInterval(holdInterval);
-})
+
 document.getElementById('pause').addEventListener("click", () => {
     console.log('pause')
     pause = !pause;
+})
+
+// document.getElementById("myChart").onclick = function(evt){
+//     var activePoints = chart.getElementAtEvent(event);
+//     console.log(activePoints);
+// }
+
+//Find specific point value
+document.getElementById('myChart').addEventListener('click', (evt)=>{
+        var activePoints = chart.getElementAtEvent(evt);
+        if(activePoints[0]){
+            const index = activePoints['0']._index;
+           activePoints['0']._model.pointStyle = 'rect';
+           // activePoints['0']._model.pointHoverBackgroundColor='rgb(120,120,10)'
+          let setBackground =  setInterval(()=>{
+              console.log(activePoints['0']._view.borderColor);
+            if(activePoints['0']._model.borderColor =  'rgb(244,20,20)' ){
+                clearInterval(setBackground);
+            }
+                activePoints['0']._model.backgroundColor = 'rgb(2,20,20)';
+                activePoints['0']._model.borderColor = 'rgb(244,20,20)';
+               
+           },500)
+
+document.getElementById('myChart').addEventListener('mousemove, mouseenter',(evt)=>{
+    var activePoints = chart.getElementAtEvent(evt);
+    console.log(activePoints);
+})
+          
+        console.log(activePoints['0'])
+     //   console.log(new Date(vData[index].x));
+        }
+        
+
 })
