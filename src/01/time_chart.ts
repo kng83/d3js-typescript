@@ -33,15 +33,25 @@ let chart = new Chart(ctx, {
             label: "Point",
             // backgroundColor: 'rgb(255, 99, 132)',
             borderColor: 'rgba(66, 134, 244,0.7)',
-            steppedLine: "before",
+            steppedLine: 'before',
             data: vData,
             fill: true,
+            pointStyle:"rect",
+            pointBackgroundColor:"rgb(200,100,200)",
+            pointBorderColor:"rgb(200,100,200)",
+            pointHoverBackgroundColor:"rgb(200,200,100)",
+          //  showLine:false
         }]
     },
 
     // Configuration options go here
     options: {
         responsive: true,
+        tooltips:{
+            backgroundColor:"rgba(66, 134, 244,0.7)",
+        //    mode:'x',
+            position:'average',
+        },
         title: {
             display: true,
             text: 'Chart.js Time Point Data'
