@@ -15,21 +15,40 @@ app.get('/dist/bundle.js', function (req, res) {
 });
 
 
-//**** Check data base
 const sql = require('mssql');
+
+
+// app.get('/bobo',(req,res)=>{
+//     console.log(req.query);
+//     let me = req.query;
+//   //  if(me['Name']!== undefined && me['Age']!==undefined){
+//     //    sql.connect('mssql://sa:12345@localhost:49714/Pyszczek')
+//         // const second =  sql.query(
+//         //     `INSERT INTO [Pyszczek].[dbo].[First]
+//         //      VALUES (${me['Name']},${me['Age']});`
+//         // )
+// //    }
+//     res.sendFile(path.join(__dirname, './server/index.html'))
+// })
+
+
+//**** Check data base
+
 
 (async () => {
     try {
-        await sql.connect('mssql://sa:12345@localhost:49714/Pyszczek');
+        await sql.connect('mssql://sa:12345@localhost:49714/Pyszczek'); //
         const result = await sql.query(
-            `SELECT TOP 1000 
+            `SELECT TOP 5
                 [Name],[Age]
                 FROM [Pyszczek].[dbo].[First]`);
         console.log(result.recordset);
 
-        // sql.query(`INSERT INTO
-        //     [Pyszczek].[dbo].[First]
-        //     VALUES (Zuzia, 1)`)
+        const second = await sql.query(
+            `INSERT INTO [Pyszczek].[dbo].[First]
+             VALUES ('Puszek',1);`//
+        )
+
     } catch (err) {
         // ... error checks
         console.log(err.message);//
