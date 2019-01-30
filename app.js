@@ -1,9 +1,28 @@
 let express = require("express")
 let path = require("path");
+const sql = require('mssql');
+let sqlConnected;
 
 const app = express();
 const port = 3000;
 
+app.get('/bobo', (req, res) => {
+    console.log(req.query);
+    let queryElement = req.query;
+    if (queryElement && queryElement['Name'] !== undefined && queryElement['Age'] !== undefined) {
+        let age = parseInt(queryElement['Age']);
+        let name = `\'${queryElement['Name']}\'`;
+        sql.query(
+            `INSERT INTO [Pyszczek].[dbo].[First]
+             VALUES (${name},${age});`
+        ).then(value => console.log(value))
+            .catch(e => console.log(e.message));
+
+    }
+
+
+    res.send('some')
+})
 app.get('/', function (req, res) {
     const p = path.join(__dirname, './server/index.html');
     res.sendFile(p);
@@ -13,41 +32,21 @@ app.get('/dist/bundle.js', function (req, res) {
     const p = path.join(__dirname, './dist/bundle.js')
     res.sendFile(p);
 });
-
-
-const sql = require('mssql');
-
-
-// app.get('/bobo',(req,res)=>{
-//     console.log(req.query);
-//     let me = req.query;
-//   //  if(me['Name']!== undefined && me['Age']!==undefined){
-//     //    sql.connect('mssql://sa:12345@localhost:49714/Pyszczek')
-//         // const second =  sql.query(
-//         //     `INSERT INTO [Pyszczek].[dbo].[First]
-//         //      VALUES (${me['Name']},${me['Age']});`
-//         // )
-// //    }
-//     res.sendFile(path.join(__dirname, './server/index.html'))
-// })
-
+//
 
 //**** Check data base
 
 
 (async () => {
     try {
-        await sql.connect('mssql://sa:12345@localhost:49714/Pyszczek'); //
-        const result = await sql.query(
-            `SELECT TOP 5
-                [Name],[Age]
-                FROM [Pyszczek].[dbo].[First]`);
-        console.log(result.recordset);
+        sqlConnected = await sql.connect('mssql://sa:12345@localhost:49714/Pyszczek');
 
-        const second = await sql.query(
-            `INSERT INTO [Pyszczek].[dbo].[First]
-             VALUES ('Puszek',1);`//
-        )
+        const result = await sqlConnected.query(
+            `SELECT TOP 10 *
+             FROM [Pyszczek].[dbo].[First]
+                ORDER BY id desc;`);
+
+        console.log(result.recordset, 's');
 
     } catch (err) {
         // ... error checks
